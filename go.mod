@@ -1,5 +1,5 @@
-module github.com/Stepan1328/onesignal-sdk
+module github.com/foundation-framework/onesignal-sdk
 
 go 1.17
 
-require github.com/google/uuid v1.3.0 // indirect
+require github.com/google/uuid v1.3.0
