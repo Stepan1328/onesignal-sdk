@@ -2,6 +2,7 @@ package onesignal
 
 import (
 	"encoding/json"
+	"log"
 	"strconv"
 )
 
@@ -55,7 +56,10 @@ func (p Params) KeyType() string {
 // AddJSONPayload adds a non-empty value that is encoded in json.
 func (p Params) AddJSONPayload(value interface{}) {
 	if value != "" {
-		data, _ := json.Marshal(value)
+		data, err := json.Marshal(value)
+		if err != nil {
+			log.Fatalf("unexpected marshaling error: %s\n", err.Error())
+		}
 
 		p[payloadKey] = Param{
 			Payload: data,
