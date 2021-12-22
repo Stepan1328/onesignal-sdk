@@ -161,12 +161,12 @@ type Button struct {
 }
 
 type Delivery struct {
-	SendAfter            time.Time `json:"send_after,omitempty"`
-	DelayedOption        string    `json:"delayed_option,omitempty"`
-	DeliveryTimeOfDay    string    `json:"delivery_time_of_day,omitempty"`
-	TTL                  int       `json:"ttl,omitempty"`
-	Priority             int       `json:"priority,omitempty"`
-	ApnsPushTypeOverride string    `json:"apns_push_type_override,omitempty"`
+	SendAfter            *time.Time `json:"send_after,omitempty"`
+	DelayedOption        string     `json:"delayed_option,omitempty"`
+	DeliveryTimeOfDay    string     `json:"delivery_time_of_day,omitempty"`
+	TTL                  int        `json:"ttl,omitempty"`
+	Priority             int        `json:"priority,omitempty"`
+	ApnsPushTypeOverride string     `json:"apns_push_type_override,omitempty"`
 }
 
 type GroupingAndCollapsing struct {

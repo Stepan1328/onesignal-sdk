@@ -15,10 +15,10 @@ type HTTPClient interface {
 }
 
 type OneSignalAPI struct {
-	restAPIKey string
+	userAuthKey string
 
-	appID   string
-	authKey string
+	appID      string
+	restAPIKey string
 
 	client          HTTPClient
 	shutdownChannel chan interface{}
@@ -26,16 +26,16 @@ type OneSignalAPI struct {
 	apiEndpoint string
 }
 
-func NewOneSignalClient(restAPIKey, appID, authKey string) (*OneSignalAPI, error) {
-	return NewOneSignalClientWithClient(restAPIKey, appID, authKey, APIEndpoint, &http.Client{})
+func NewOneSignalClient(userAuthKey, appID, restAPIKey string) (*OneSignalAPI, error) {
+	return NewOneSignalClientWithClient(userAuthKey, appID, restAPIKey, APIEndpoint, &http.Client{})
 }
 
-func NewOneSignalClientWithClient(restAPIKey, appID, authKey, apiEndpoint string, client HTTPClient) (*OneSignalAPI, error) {
+func NewOneSignalClientWithClient(userAuthKey, appID, restAPIKey, apiEndpoint string, client HTTPClient) (*OneSignalAPI, error) {
 	oneSignalClient := &OneSignalAPI{
-		restAPIKey: restAPIKey,
+		userAuthKey: userAuthKey,
 
-		appID:   appID,
-		authKey: authKey,
+		appID:      appID,
+		restAPIKey: restAPIKey,
 
 		client:          client,
 		shutdownChannel: make(chan interface{}),
@@ -43,9 +43,9 @@ func NewOneSignalClientWithClient(restAPIKey, appID, authKey, apiEndpoint string
 		apiEndpoint: apiEndpoint,
 	}
 
-	_, err := oneSignalClient.ViewApp()
+	//_, err := oneSignalClient.ViewApp()
 
-	return oneSignalClient, err
+	return oneSignalClient, nil
 }
 
 // SetAPIEndpoint changes the OneSignal API endpoint used by the instance.
@@ -101,7 +101,7 @@ func (c OneSignalAPI) wrapRequest(req *http.Request, params Params) {
 func (c *OneSignalAPI) getAuthorizationKey(params Params) string {
 	switch params.KeyType() {
 	case typeAuth:
-		return c.authKey
+		return c.userAuthKey
 	case typeRestAPI:
 		return c.restAPIKey
 	}
@@ -111,6 +111,7 @@ func (c *OneSignalAPI) getAuthorizationKey(params Params) string {
 func (c *OneSignalAPI) decodeApiError(data []byte) error {
 	var apiErr ApiError
 
+	fmt.Println(string(data))
 	err := json.Unmarshal(data, &apiErr)
 	if err != nil {
 		return err
@@ -123,7 +124,7 @@ func (c *OneSignalAPI) CreateNotification(config *CreateNotificationConfig) (*Cr
 	params, _ := config.params()
 	params.AddURLNonEmpty("app_id", c.appID)
 
-	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeAuth))
+	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeRestAPI))
 	if err != nil {
 		return nil, err
 	}
@@ -138,7 +139,7 @@ func (c *OneSignalAPI) CancelNotification(config *CancelNotificationConfig) (*Ca
 	params, _ := config.params()
 	params.AddURLNonEmpty("app_id", c.appID)
 
-	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeAuth))
+	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeRestAPI))
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +151,7 @@ func (c *OneSignalAPI) CancelNotification(config *CancelNotificationConfig) (*Ca
 }
 
 func (c *OneSignalAPI) ViewApps() (*Apps, error) {
-	resp, err := c.MakeRequest("apps", NewParamsWithMethod(http.MethodGet).SetKeyType(typeRestAPI))
+	resp, err := c.MakeRequest("apps", NewParamsWithMethod(http.MethodGet).SetKeyType(typeAuth))
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +163,7 @@ func (c *OneSignalAPI) ViewApps() (*Apps, error) {
 }
 
 func (c *OneSignalAPI) ViewApp() (*App, error) {
-	resp, err := c.MakeRequest("apps/"+c.appID, NewParamsWithMethod(http.MethodGet).SetKeyType(typeAuth))
+	resp, err := c.MakeRequest("apps/"+c.appID, NewParamsWithMethod(http.MethodGet).SetKeyType(typeRestAPI))
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +178,7 @@ func (c *OneSignalAPI) CreateApp(config *CreateAppConfig) (*App, error) {
 	params, _ := config.params()
 	params.AddURLNonEmpty("app_id", c.appID)
 
-	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeRestAPI))
+	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeAuth))
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +198,7 @@ func (c *OneSignalAPI) ViewDevices(config *ViewDevicesConfig) (*Devices, error) 
 	params, _ := config.params()
 	params.AddURLNonEmpty("app_id", c.appID)
 
-	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeAuth))
+	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeRestAPI))
 	if err != nil {
 		return nil, err
 	}
@@ -212,7 +213,7 @@ func (c *OneSignalAPI) ViewDevice(config *ViewDeviceConfig) (*Device, error) {
 	params, _ := config.params()
 	params.AddURLNonEmpty("app_id", c.appID)
 
-	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeAuth))
+	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeRestAPI))
 	if err != nil {
 		return nil, err
 	}
@@ -227,7 +228,7 @@ func (c *OneSignalAPI) AddDevice(config *AddDeviceConfig) (*AddDeviceResult, err
 	config.AppID = c.appID
 	params, _ := config.params()
 
-	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeAuth))
+	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeRestAPI))
 	if err != nil {
 		return nil, err
 	}
@@ -242,7 +243,7 @@ func (c *OneSignalAPI) EditDevice(config *EditDeviceConfig) (*EditDeviceResult, 
 	config.AppID = c.appID
 	params, _ := config.params()
 
-	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeAuth))
+	resp, err := c.MakeRequest(config.endpoint(), params.SetKeyType(typeRestAPI))
 	if err != nil {
 		return nil, err
 	}

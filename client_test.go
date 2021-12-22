@@ -3,19 +3,17 @@ package onesignal
 import (
 	"encoding/json"
 	"testing"
-	"time"
 
 	"github.com/google/uuid"
 )
 
 const (
-	TestRestAPIKey = "OTllNDkyMGQtYWE3Yy00YTkwLWFiYmYtZWZkNzIwMjk0NTZl"
+	TestUserAuthKey = "ZDI1NWQzNTgtZTM5Ni00MjFkLWEyOWUtZGU3NGU0MGQwMjlk"
 
-	TestAppID   = "fc07fb28-1c8a-4ec8-b77a-817476e6e158"
-	TestAuthKey = "OWM2YmIwYWMtZGMwMS00NDI0LTk5MjAtZGQ0ZjVkMDY2MDBi"
+	TestAppID      = "fc07fb28-1c8a-4ec8-b77a-817476e6e158"
+	TestRestAPIKey = "OWM2YmIwYWMtZGMwMS00NDI0LTk5MjAtZGQ0ZjVkMDY2MDBi"
 
-	TestUserID  = "8729f50f-7cde-429a-a34b-b05e7a973ddd"
-	TestUserID2 = "ef5821a2-5f92-11ec-8cef-3e79ffedf5bb"
+	TestUserID = "8729f50f-7cde-429a-a34b-b05e7a973ddd"
 )
 
 func newToken() string {
@@ -23,7 +21,7 @@ func newToken() string {
 }
 
 func getClient() *OneSignalAPI {
-	client, err := NewOneSignalClient(TestRestAPIKey, TestAppID, TestAuthKey)
+	client, err := NewOneSignalClient(TestUserAuthKey, TestAppID, TestRestAPIKey)
 	if err != nil {
 		panic(err)
 	}
@@ -43,11 +41,9 @@ func TestOneSignalAPI_CreateNotification(t *testing.T) {
 		).
 		AddExternalUserIDs(
 			"013c1c9e-4b53-4759-90da-6da148b907e0",
-			"bde3095f-e5c1-41ca-8e9d-664d36017e2e",
 		).
 		AddData(map[string]interface{}{"abc": 123, "foo": "bar", "event_performed": true, "amount": 12.1}).
-		AddAndroidGrouping("en", "Some suck")
-	config.SendAfter = time.Now().Add(time.Minute)
+		AddAndroidGrouping("en", "Some header")
 
 	result, err := client.CreateNotification(config)
 	if err != nil {
@@ -181,7 +177,7 @@ func TestOneSignalAPI_EditDevice(t *testing.T) {
 	client := getClient()
 
 	config := &EditDeviceConfig{
-		ID:             TestUserID2,
+		ID:             TestUserID,
 		ExternalUserID: newToken(),
 	}
 
