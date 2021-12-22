@@ -3,6 +3,7 @@ package onesignal
 import (
 	"encoding/json"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -20,8 +21,8 @@ func newToken() string {
 	return uuid.New().String()
 }
 
-func getClient() *OneSignalAPI {
-	client, err := NewOneSignalClient(TestUserAuthKey, TestAppID, TestRestAPIKey)
+func getClient() *Client {
+	client, err := NewClient(TestUserAuthKey, TestAppID, TestRestAPIKey)
 	if err != nil {
 		panic(err)
 	}
@@ -34,16 +35,19 @@ var notificationID string
 func TestOneSignalAPI_CreateNotification(t *testing.T) {
 	client := getClient()
 
-	config := NewCreateNotification().
-		AddMessage(
+	config := NewCreateNotificationConfig().
+		AddMessages(
 			English("New message", "Something header"),
 			Russian("Новое сообщение", "Какой-то заголовок"),
 		).
-		AddExternalUserIDs(
-			"013c1c9e-4b53-4759-90da-6da148b907e0",
+		AddDevices(
+			TestUserID,
 		).
 		AddData(map[string]interface{}{"abc": 123, "foo": "bar", "event_performed": true, "amount": 12.1}).
 		AddAndroidGrouping("en", "Some header")
+
+	sendTime := time.Now().Add(time.Minute)
+	config.SendAfter = &sendTime
 
 	result, err := client.CreateNotification(config)
 	if err != nil {
@@ -59,7 +63,7 @@ func TestOneSignalAPI_CreateNotification(t *testing.T) {
 func TestOneSignalAPI_CancelNotification(t *testing.T) {
 	client := getClient()
 
-	config := NewCancelNotification(notificationID)
+	config := NewCancelNotificationConfig(notificationID)
 
 	result, err := client.CancelNotification(config)
 	if err != nil {
@@ -159,7 +163,7 @@ func TestOneSignalAPI_AddDevice(t *testing.T) {
 		ExternalUserID: newToken(),
 	}
 
-	result, err := client.AddDevice(config)
+	result, err := client.AddDevicesAddDevices(config)
 	if err != nil {
 		t.Error("add device error:", err)
 		t.Failed()

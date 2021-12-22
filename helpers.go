@@ -1,16 +1,16 @@
 package onesignal
 
-func NewCreateNotification() *CreateNotificationConfig {
+func NewCreateNotificationConfig() *CreateNotificationConfig {
 	return &CreateNotificationConfig{}
 }
 
-func NewCancelNotification(id string) *CancelNotificationConfig {
+func NewCancelNotificationConfig(id string) *CancelNotificationConfig {
 	return &CancelNotificationConfig{
 		NotificationID: id,
 	}
 }
 
-func (c *CreateNotificationConfig) AddMessage(contents ...Content) *CreateNotificationConfig {
+func (c *CreateNotificationConfig) AddMessages(contents ...Content) *CreateNotificationConfig {
 	for _, content := range contents {
 		if c.Contents == nil {
 			c.Contents = NewLocalizedContent()
@@ -26,7 +26,7 @@ func (c *CreateNotificationConfig) AddMessage(contents ...Content) *CreateNotifi
 	return c
 }
 
-func (c *CreateNotificationConfig) AddDevice(ids ...string) *CreateNotificationConfig {
+func (c *CreateNotificationConfig) AddDevices(ids ...string) *CreateNotificationConfig {
 	if c.Devices == nil {
 		c.Devices = NewDevices()
 	}

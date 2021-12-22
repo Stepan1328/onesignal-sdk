@@ -6,9 +6,7 @@ type CreateNotificationResult struct {
 	Id         string      `json:"id,omitempty"`
 	Recipients int         `json:"recipients,omitempty"`
 	ExternalId interface{} `json:"external_id,omitempty"`
-	Errors     struct {
-		InvalidPlayerIds []string `json:"invalid_player_ids"`
-	} `json:"errors"`
+	Errors     []string    `json:"errors"`
 }
 
 type Devices struct {
@@ -17,8 +15,6 @@ type Devices struct {
 	Limit      int      `json:"limit"`
 	Players    []Device `json:"players"`
 }
-
-type Apps []App
 
 type App struct {
 	Id                               string    `json:"id"`
