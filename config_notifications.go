@@ -154,6 +154,10 @@ type ActionButtons struct {
 	IconType    string   `json:"icon_type"`
 }
 
+type Appearance struct {
+	AndroidChannelID string `json:"android_channel_id,omitempty"`
+}
+
 type Button struct {
 	ID   string `json:"id,omitempty"`
 	Text string `json:"text,omitempty"`

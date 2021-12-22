@@ -18,8 +18,6 @@ type CreateNotificationConfig struct {
 	// objects containing field conditions to check
 	Filters Filters `json:"filters,omitempty"`
 
-	AndroidChannelID string `json:"android_channel_id,omitempty"`
-
 	// SpecificDevices can target specific devices. Targeting devices is typically used in
 	// two ways:
 	// 1) For transactional notifications that target individual users.
@@ -40,6 +38,27 @@ type CreateNotificationConfig struct {
 	// one action on a notification.
 	// Read more: https://documentation.onesignal.com/docs/action-buttons
 	ActionButtons
+	// Appearance used for Push notifications only
+	//
+	// These parameters let you adjust icons, badges, and other appearance changes to
+	// your push notifications.
+	//
+	// 1) Android & Huawei Notification Categories / Channels
+	// - Allows customizing Importance, Sound, Vibration, LED Color, Badges, and Lockscreen Visibility.
+	// - Required to customize these options on Android 8 (Oreo) based devices.
+	//   - OneSignal SDK handles fallback to Android 7 and older, no need to set field level values if android_channel_id is set.
+	// - See the Category documentation on more details on creating and using them.
+	//
+	// 2) Icons - Different platforms handle icons differently.
+	// - Android - The OneSignal SDK shows a bell icon by default. See our Android Notification Icons guide to change this.
+	// - Huawei- Defaults to the App Icon. See our Android Notification Icons guide to change this.
+	// - iOS - The icon will always be your app icon.
+	//
+	// 3) Badges - Useful to indicate to the user the number of notifications outstanding.
+	// - iOS - Can customize the number badge number on the app icon.
+	// - Android - Always reflects the number of notifications in the shade.
+	// - The OneSignal SDK automatically handles this behavior.
+	Appearance
 	// Delivery will help you send notifications at a certain point in time in the
 	// future
 	Delivery

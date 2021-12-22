@@ -17,10 +17,6 @@ const (
 	TestUserID = "8729f50f-7cde-429a-a34b-b05e7a973ddd"
 )
 
-func newToken() string {
-	return uuid.New().String()
-}
-
 func getClient() *Client {
 	client, err := NewClient(TestUserAuthKey, TestAppID, TestRestAPIKey)
 	if err != nil {
@@ -102,6 +98,10 @@ func TestOneSignalAPI_ViewApp(t *testing.T) {
 	t.Logf("app: \n%s\n", FormatData(app))
 }
 
+func TestOneSignalAPI_UpdateApp(t *testing.T) {
+	// TODO
+}
+
 //func TestOneSignalAPI_CreatApp(t *testing.T) {
 //	client := getClient()
 //
@@ -117,10 +117,6 @@ func TestOneSignalAPI_ViewApp(t *testing.T) {
 //
 //	t.Logf("app: \n%s\n", FormatData(app))
 //}
-
-func TestOneSignalAPI_UpdateApp(t *testing.T) {
-	// TODO
-}
 
 func TestOneSignalAPI_ViewDevices(t *testing.T) {
 	client := getClient()
@@ -154,6 +150,27 @@ func TestOneSignalAPI_ViewDevice(t *testing.T) {
 	t.Logf("devices: \n%s\n", FormatData(devices))
 }
 
+func TestOneSignalAPI_EditDevice(t *testing.T) {
+	client := getClient()
+
+	config := &EditDeviceConfig{
+		ID:             TestUserID,
+		ExternalUserID: newToken(),
+	}
+
+	result, err := client.EditDevice(config)
+	if err != nil {
+		t.Error("edit device error:", err)
+		t.Failed()
+	}
+
+	if !result.Success {
+		t.Failed()
+	}
+
+	t.Logf("result: \n%s\n", FormatData(result))
+}
+
 /*
 func TestOneSignalAPI_AddDevice(t *testing.T) {
 	client := getClient()
@@ -176,27 +193,6 @@ func TestOneSignalAPI_AddDevice(t *testing.T) {
 	t.Logf("device: \n%s\n", FormatData(result))
 }
 */
-
-func TestOneSignalAPI_EditDevice(t *testing.T) {
-	client := getClient()
-
-	config := &EditDeviceConfig{
-		ID:             TestUserID,
-		ExternalUserID: newToken(),
-	}
-
-	result, err := client.EditDevice(config)
-	if err != nil {
-		t.Error("edit device error:", err)
-		t.Failed()
-	}
-
-	if !result.Success {
-		t.Failed()
-	}
-
-	t.Logf("result: \n%s\n", FormatData(result))
-}
 
 func TestOneSignalAPI_EditTagsWithExternalUserID(t *testing.T) {
 	// TODO
@@ -241,4 +237,8 @@ func FormatData(data interface{}) string {
 	}
 
 	return string(result)
+}
+
+func newToken() string {
+	return uuid.New().String()
 }
