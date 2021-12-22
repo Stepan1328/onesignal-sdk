@@ -127,19 +127,19 @@ type Content struct {
 	Title    string
 }
 
-func English(message, title string) Content {
+func English(title, message string) Content {
 	return Content{
 		Location: "en",
-		Message:  message,
 		Title:    title,
+		Message:  message,
 	}
 }
 
-func Russian(message, title string) Content {
+func Russian(title, message string) Content {
 	return Content{
 		Location: "en",
-		Message:  message,
 		Title:    title,
+		Message:  message,
 	}
 }
 
