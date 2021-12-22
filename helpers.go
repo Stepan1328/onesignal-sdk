@@ -10,6 +10,11 @@ func NewCancelNotificationConfig(id string) *CancelNotificationConfig {
 	}
 }
 
+func (c *CreateNotificationConfig) AddAndroidChannelID(channelID string) *CreateNotificationConfig {
+	c.AndroidChannelID = channelID
+	return c
+}
+
 func (c *CreateNotificationConfig) AddMessages(contents ...Content) *CreateNotificationConfig {
 	for _, content := range contents {
 		if c.Contents == nil {

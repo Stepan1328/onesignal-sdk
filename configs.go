@@ -17,6 +17,9 @@ type CreateNotificationConfig struct {
 	// 'filters' parameter targets notification recipients using an array of JSON
 	// objects containing field conditions to check
 	Filters Filters `json:"filters,omitempty"`
+
+	AndroidChannelID string `json:"android_channel_id,omitempty"`
+
 	// SpecificDevices can target specific devices. Targeting devices is typically used in
 	// two ways:
 	// 1) For transactional notifications that target individual users.
